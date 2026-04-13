@@ -1,0 +1,23 @@
+演奏者:陳禹之、曲友友
+日期:2024/12/20
+Debussy Petite Suite - 3
+
+Roland & KAWAI keyboards. All sound from speakers.
+
+Human-Human:
+
+tracktionedit file:
+1 piano (KAWAI) Take 1
+2 pianos (Top: Roland, Bottom: KAWAI) Take 1
+
+Human-AI: (recapitulation)
+
+1.txt (input then output)
+Top: AI, Bottom: Human @ Roland
+FAIL
+
+2.txt (input then output)
+Top: AI, Bottom: Human @ Roland
+
+3.txt (input then output)
+Top: Human @ Roland, Bottom: AI

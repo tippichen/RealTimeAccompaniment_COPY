@@ -1,0 +1,21 @@
+演奏者:黃麗安、吳宛樺
+日期:2024/12/17
+
+Debussy Petite Suite - 1
+Roland & KAWAI keyboards. All sound from speakers.
+
+Human-Human:
+
+tracktionedit file:
+1 piano (KAWAI) Take 1
+2 pianos (Top: Roland, Bottom: KAWAI) Take 1
+1 piano (KAWAI) Take 2
+2 pianos (Top: Roland, Bottom: KAWAI) Take 2
+
+Human-AI:
+
+in.txt, out.txt
+Top: Human @ Roland, Bottom: AI
+
+in2.txt, out2.txt
+Top: AI, Bottom: Human @ Roland

@@ -1,0 +1,23 @@
+演奏者:曹若忻、游幸璇
+日期:2024/12/18
+Debussy Petite Suite - 4, Fauré Dolly Suite - 1 & 5
+
+Roland & KAWAI keyboards. All sound from speakers.
+
+Human-Human:
+
+tracktionedit file:
+1 piano (KAWAI) Debussy 4, Take 1
+1 piano (KAWAI) Debussy 4, Take 2
+2 pianos (Top: Roland, Bottom: KAWAI) Debussy 4, Take 1
+1 piano (KAWAI) Fauré 1, Take 1
+2 pianos (Top: Roland, Bottom: KAWAI) Fauré 1, Take 1
+1 piano (KAWAI) Fauré 5, Take 1
+
+Human-AI: (Fauré 5 first page)
+
+1.txt (input then output)
+Top: Human @ Roland, Bottom: AI
+
+2.txt (input then output)
+Top: AI, Bottom: Human @ Roland

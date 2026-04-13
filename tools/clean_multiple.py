@@ -43,6 +43,13 @@ for p in sys.argv[1:]:
         continue
     clean = []
     for d in data:
+        # 【新增這兩行防呆機制】
+        # 如果 d 已經是陣列 (list)，代表處理過了，直接原封不動塞進去
+        if isinstance(d, list):
+            clean.append(d)
+            continue
+            
+        # 下面維持原本的邏輯
         idx = to_number(d.get('index'))
         onoff = to_number(d.get('on_off'))
         note = to_number(d.get('note#'))
@@ -50,5 +57,6 @@ for p in sys.argv[1:]:
         time = to_number(d.get('time'))
         vel = to_number(d.get('vel'))
         clean.append([idx, onoff, note, pos, time, vel])
+
     path.write_text(repr(clean), encoding='utf-8')
     print('WROTE', path)
