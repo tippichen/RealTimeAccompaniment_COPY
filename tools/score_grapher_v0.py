@@ -4,9 +4,6 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-
-
-
 def graph(score,savefile):
     try:
         lastnotetiming=score[-1][3]
