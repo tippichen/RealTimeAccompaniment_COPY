@@ -1,1 +1,5 @@
 This is the data management repository for the year 2026.
+
+entry_smc.py: (the code that can fill entry excel(sample database) automatically
+folder "entry" : file name with 1, 2, 3, ..., 246 (There are 246 files in SMC2024)
+sample_database_SMC2024_filled: the finish excel for smc2024 (可以基於這份接下去填完其他資料夾的檔案)
