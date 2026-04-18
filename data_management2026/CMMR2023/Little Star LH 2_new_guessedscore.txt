@@ -1,0 +1,3 @@
+guessed score:littlestarLH
+similarity: 97.70%
+path: logs\littlestarLH\outputscore.txt
