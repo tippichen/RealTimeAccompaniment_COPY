@@ -15,6 +15,12 @@ def build_time_map(input_interp):
         if on_off == 144 and time is not None:
             pairs.append((position, time))
     pairs.sort()
+    if pairs:
+        clean = [pairs[0]]
+        for p, t in pairs[1:]:
+            if t > clean[-1][1]:
+                clean.append((p, t))
+        pairs = clean
     return pairs
 
 
@@ -58,17 +64,26 @@ def estimate_velocity(position, input_interp, window=2.0):
 
 def generate_output_interpretation(input_interp, output_score):
     time_map = build_time_map(input_interp)
+    note_on_vel = {}
     result = []
     for event in output_score:
         idx, on_off, note, position = event
         time = interpolate_time(position, time_map)
-        velocity = estimate_velocity(position, input_interp) if on_off == 144 else 0
+        if on_off == 144:
+            velocity = estimate_velocity(position, input_interp)
+            note_on_vel[note] = velocity
+        else:
+            if note in note_on_vel:
+                velocity = note_on_vel[note]
+            else:
+                prev = next((e[5] for e in reversed(result) if e[1] == 144 and e[2] == note), None)
+                velocity = prev if prev is not None else estimate_velocity(position, input_interp)
         result.append([idx, on_off, note, position, time, velocity])
     return result
 
 
 def main():
-    cmmr_dir = Path(__file__).parent / 'CMMR2023'
+    cmmr_dir = Path(__file__).parent.parent / 'CMMR2023'
 
     input_files = sorted(
         f for f in os.listdir(cmmr_dir)
@@ -87,13 +102,22 @@ def main():
         output_path = cmmr_dir / f"{stem}_outputinterpretation.txt"
 
         if not score_path.exists():
-            print(f"  SKIP {input_filename}: {score_path.name} not found")
-            continue
+            if not output_path.exists():
+                print(f"  SKIP {input_filename}: no outputscore or existing outputinterpretation")
+                continue
+            # Reconstruct score from existing outputinterpretation
+            existing = parse_file(output_path)
+            output_score = [[e[0], e[1], e[2], e[3]] for e in existing]
+            score_source = f"reconstructed from {output_path.name}"
+        else:
+            output_score = None
+            score_source = score_path.name
 
         total += 1
         try:
             input_interp = parse_file(input_path)
-            output_score = parse_file(score_path)
+            if output_score is None:
+                output_score = parse_file(score_path)
 
             output_interp = generate_output_interpretation(input_interp, output_score)
 
@@ -101,7 +125,7 @@ def main():
                 f.write(str(output_interp))
 
             timed = sum(1 for e in output_interp if e[4] is not None)
-            print(f"  {stem}: {timed}/{len(output_interp)} events timed")
+            print(f"  {stem}: {timed}/{len(output_interp)} events timed (score: {score_source})")
             success += 1
 
         except Exception as e:

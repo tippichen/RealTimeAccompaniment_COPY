@@ -16,6 +16,12 @@ def build_time_map(input_interp):
         if on_off == 144 and time is not None:
             pairs.append((position, time))
     pairs.sort()
+    if pairs:
+        clean = [pairs[0]]
+        for p, t in pairs[1:]:
+            if t > clean[-1][1]:
+                clean.append((p, t))
+        pairs = clean
     return pairs
 
 
@@ -61,11 +67,21 @@ def estimate_velocity(position, input_interp, window=2.0):
 
 def generate_output_interpretation(input_interp, output_score):
     time_map = build_time_map(input_interp)
+    note_on_vel = {}
     result = []
     for event in output_score:
         idx, on_off, note, position = event
         time = interpolate_time(position, time_map)
-        velocity = estimate_velocity(position, input_interp) if on_off == 144 else 0
+        if on_off == 144:
+            velocity = estimate_velocity(position, input_interp)
+            note_on_vel[note] = velocity
+        else:
+            if note in note_on_vel:
+                velocity = note_on_vel[note]
+            else:
+                # note-off before its note-on (re-trigger): find last note-on in result
+                prev = next((e[5] for e in reversed(result) if e[1] == 144 and e[2] == note), None)
+                velocity = prev if prev is not None else estimate_velocity(position, input_interp)
         result.append([idx, on_off, note, position, time, velocity])
     return result
 
@@ -75,12 +91,23 @@ def process_folder(folder_path):
     score_file = folder_path / 'outputscore.txt'
     output_file = folder_path / 'outputinterpretation.txt'
 
-    if not input_file.exists() or not score_file.exists():
+    if not input_file.exists():
         return False
+
+    if not score_file.exists():
+        if not output_file.exists():
+            return False
+        existing = parse_file(output_file)
+        output_score = [[e[0], e[1], e[2], e[3]] for e in existing]
+        score_source = 'reconstructed'
+    else:
+        output_score = None
+        score_source = 'outputscore.txt'
 
     try:
         input_interp = parse_file(input_file)
-        output_score = parse_file(score_file)
+        if output_score is None:
+            output_score = parse_file(score_file)
 
         output_interp = generate_output_interpretation(input_interp, output_score)
 
@@ -88,7 +115,7 @@ def process_folder(folder_path):
             f.write(str(output_interp))
 
         timed = sum(1 for e in output_interp if e[4] is not None)
-        print(f"  {folder_path.name}: {timed}/{len(output_interp)} events timed")
+        print(f"  {folder_path.name}: {timed}/{len(output_interp)} events timed ({score_source})")
         return True
 
     except Exception as e:
@@ -97,7 +124,7 @@ def process_folder(folder_path):
 
 
 def main():
-    logs_dir = Path(__file__).parent
+    logs_dir = Path(__file__).parent.parent / 'CMMR2023' / 'logs'
     print(f"Processing logs in: {logs_dir}\n")
 
     success = 0
@@ -111,7 +138,9 @@ def main():
         if folder == logs_dir:
             continue
 
-        if 'inputinterpretation.txt' in files and 'outputscore.txt' in files:
+        has_input = 'inputinterpretation.txt' in files
+        has_score = 'outputscore.txt' in files or 'outputinterpretation.txt' in files
+        if has_input and has_score:
             total += 1
             if process_folder(folder):
                 success += 1
