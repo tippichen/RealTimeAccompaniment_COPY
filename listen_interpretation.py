@@ -103,7 +103,7 @@ def main():
         
         # 如果你原本的檔名是 interpretation_ 開頭，請改用下面這行
         if not files:
-            files = list(dir_path.glob('interpretation_*.txt'))
+            files = list(dir_path.glob('inputinterpretation_*.txt'))
 
         for f_path in files:
             # 產出的 MIDI 檔名：加上 _listen 字樣方便區分
