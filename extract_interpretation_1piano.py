@@ -1,5 +1,5 @@
 import json
-piece = "debussy"
+piece = "faure"
 def write_interpretation(performance,interpretation):
     #make a list of all unique note-on inputscorepositions
     inputscorepositions=[-1]
@@ -50,9 +50,9 @@ def write_interpretation(performance,interpretation):
     return interpretation
 
 # Read two output scores
-with open(r'logs/debussy1_1/outputscore.txt') as f:
+with open(r'logs/faure1_1/outputscore.txt') as f:
     score_0 = eval(f.read())
-with open(r'logs/debussy1_2/outputscore.txt') as f:
+with open(r'logs/faure1_2/outputscore.txt') as f:
     score_1 = eval(f.read())
 
 # Create a temporary list with tags and old indices
@@ -86,7 +86,7 @@ with open("combine_outputscore.txt", "w") as f:
 combined_interpretation = [event + [0, 0] for event in combined_score]
 
 # Read the recording file (e.g., Take 1)
-with open(r'data_management2026/202412 Experiments/20241217/inputmslog_Take_3_Human_1.txt') as f:
+with open(r'data_management2026/202412 Experiments/20241218/inputmslog_Take_4_Human_1.txt') as f:
     performance = eval(f.read())
     # Here you need to filter out inputperformance or the track you want to align
 
@@ -123,9 +123,9 @@ result_interpretation_1.sort(key=lambda x: x[0])
 # ==========================================
 
 # Output the first interpretation
-with open(r"data_management2026/202412 Experiments/20241217/inputinterpretation_Take_3_Human_1.txt", "w") as f:
+with open(r"data_management2026/202412 Experiments/20241218/inputinterpretation_Take_4_Human_1.txt", "w") as f:
     f.write(str(result_interpretation_0))
 
 # Output the second interpretation
-with open(r"data_management2026/202412 Experiments/20241217/inputinterpretation_Take_3_Human_2.txt", "w") as f:
+with open(r"data_management2026/202412 Experiments/20241218/inputinterpretation_Take_4_Human_2.txt", "w") as f:
     f.write(str(result_interpretation_1))
